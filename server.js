@@ -27,6 +27,8 @@ app.use('/api/v1/auth',auth);
 // error handler
 app.use(errorHandler)
 
+//Going to try passport jwt in these branch
+
 const PORT = process.env.PORT || 8000
 
 const server = app.listen(PORT,console.log(`Server listening on ${PORT}` ))
