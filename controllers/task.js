@@ -1,6 +1,6 @@
 const Task = require('../models/Task')
 const asyncHandler = require('../middlewares/async')
-const User = require('../models/User')
+const ErrorResponse = require('../utils/errorResponse');
 
 
 // @desc      Get all tasks

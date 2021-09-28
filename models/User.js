@@ -1,4 +1,7 @@
-const mongoose = require('mongoose')
+const crypto = require('crypto');
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const UserSchema = new mongoose.Schema({
     username : {
@@ -47,6 +50,7 @@ const UserSchema = new mongoose.Schema({
         default: new Date()
     }
 },{timestamps : true })
+
 
 
 module.exports = mongoose.model('User',UserSchema);

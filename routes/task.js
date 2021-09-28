@@ -19,7 +19,7 @@ router
 
 router
     .route('/:id')
-    .get(authorize('admin'),getTask)
+    .get(getTask)
     .put(updateTask)
     .delete(deleteTask)
 

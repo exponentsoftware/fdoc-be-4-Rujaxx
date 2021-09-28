@@ -12,23 +12,17 @@ connectDB()
 //route files
 const tasks = require('./routes/task')
 const users = require('./routes/user')
+const auth = require('./routes/auth')
 
 const app = express();
 
 //body parser
 app.use(express.json())
-// app.use(setUser)
+
 // Mount routers
 app.use('/api/v1/tasks', tasks);
 app.use('/api/v1/users', users);
-
-// function setUser(req, res, next) {
-//     const userId = req.body.userId
-//     if (userId) {
-//       req.user = users.find(user => user.id === userId)
-//     }
-//     next()
-//   }
+app.use('/api/v1/auth',auth);
 
 // error handler
 app.use(errorHandler)

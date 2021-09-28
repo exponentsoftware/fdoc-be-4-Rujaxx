@@ -13,7 +13,6 @@ const router = express.Router();
 router
     .route('/')
     .get(getUsers)
-    .post(addUser)
 
 router
     .route('/:id')
