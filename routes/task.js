@@ -12,15 +12,17 @@ const {
 
 const router = express.Router();
 
+const { protect, authorize } = require('../middlewares/auth')
+
 router
     .route('/')
-    .get(getTasks)
-    .post(addTask)
+    .get(protect,authorize('user','admin'),getTasks)
+    .post(protect,addTask)
 
 router
     .route('/:id')
     .get(getTask)
-    .put(updateTask)
-    .delete(deleteTask)
+    .put(protect,authorize('user','admin'),updateTask)
+    .delete(protect,authorize('user','admin'),deleteTask)
 
 module.exports = router;

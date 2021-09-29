@@ -15,6 +15,7 @@ exports.getTasks = asyncHandler(async(req,res,next) => {
         count : tasks.length,
         data : tasks
     })
+
 })
 
 // @desc      Get a task
@@ -27,6 +28,8 @@ exports.getTask = asyncHandler(async(req,res,next) => {
           new ErrorResponse(`task not found with id of ${req.params.id}`, 404)
         );
       }
+
+      
 
     res.status(200).json({
         success : true,
@@ -50,10 +53,8 @@ exports.addTask = asyncHandler(async(req,res,next) => {
 // @route     PUT /api/v1/tasks/:id
 // @access    Public
 exports.updateTask = asyncHandler(async(req,res,next) => {
-    const task = await Task.findByIdAndUpdate(req.params.id,req.body,{
-        new: true,
-        validators : true
-    });
+    let task = await Task.findById(req.params.id);
+    console.log(req.user.id)
 
     if (!task) {
         return next(
@@ -61,10 +62,25 @@ exports.updateTask = asyncHandler(async(req,res,next) => {
         );
       }
 
+      // Make sure user is task owner
+    if (task.user.toString() !== req.user.id && req.user.role !== 'admin') {
+      return next(
+        new ErrorResponse(
+          `User ${req.user.id} is not authorized to update this task`,
+          401
+        )
+      );
+    }
+
+    task = await Task.findByIdAndUpdate(req.params.id,req.body,{
+      new: true,
+      validators : true
+    });
+
     res.status(200).json({
         success : true,
         data : task
-    })
+    })  
 })
 
 
@@ -72,25 +88,6 @@ exports.updateTask = asyncHandler(async(req,res,next) => {
 // @route     DELETE /api/v1/tasks/:id
 // @access    Public
 exports.deleteTask = asyncHandler(async(req,res,next) => {
-    const task = await Task.findByIdAndDelete(req.params.id);
-
-    if (!task) {
-        return next(
-          new ErrorResponse(`task not found with id of ${req.params.id}`, 404)
-        );
-      }
-
-    res.status(200).json({
-        success:true,
-        message: "deleted succesfully"
-      })
-})
-
-
-// @desc      Get a task
-// @route     GET /api/v1/tasks/:id
-// @access    Public
-exports.getTaskByUser = asyncHandler(async(req,res,next) => {
     const task = await Task.findById(req.params.id);
 
     if (!task) {
@@ -99,8 +96,21 @@ exports.getTaskByUser = asyncHandler(async(req,res,next) => {
         );
       }
 
+     // Make sure user is task owner
+     if (task.user.toString() !== req.user.id && req.user.role !== 'admin') {
+      return next(
+        new ErrorResponse(
+          `User ${req.user.id} is not authorized to delete this task`,
+          401
+        )
+      );
+    }
+
+    task.remove();
+
     res.status(200).json({
-        success : true,
-        data : task
-    })
+        success:true,
+        message: "deleted succesfully"
+      })
 })
+
